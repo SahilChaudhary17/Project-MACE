@@ -273,7 +273,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                                   ),
 
                                   Text(
-                                    '05 Sept',
+                                    '03 Oct',
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                       fontFamily: FitnessAppTheme.fontName,

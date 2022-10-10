@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../LoginPages/Login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -16,15 +18,38 @@ class _SignUpState extends State<SignUp> {
   final FocusNode focusNodeConfirmPassword = FocusNode();
   final FocusNode focusNodeEmail = FocusNode();
   final FocusNode focusNodeName = FocusNode();
-
+  final controller = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+  bool _showSpinner = false;
   bool _obscureTextPassword = true;
   bool _obscureTextConfirmPassword = true;
 
   TextEditingController signupEmailController = TextEditingController();
   TextEditingController signupNameController = TextEditingController();
   TextEditingController signupPasswordController = TextEditingController();
-  TextEditingController signupConfirmPasswordController =
-      TextEditingController();
+  TextEditingController signupConfirmPasswordController = TextEditingController();
+
+  late String name;
+  late String email;
+  late String password;
+  void getCredentials() async {
+    setState(() {
+      _showSpinner = true;
+    });
+    try {
+      final newUser = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      if (newUser != null){
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>LoginPage()));
+      }
+      setState(() {
+        _showSpinner = false;
+      });
+    }
+    catch (e) {
+      print(e);
+    }
+  }
 
   @override
   void dispose() {
@@ -81,7 +106,11 @@ class _SignUpState extends State<SignUp> {
                           onSubmitted: (_) {
                             focusNodeEmail.requestFocus();
                           },
-                        ),
+                          onChanged: (value) {
+                            //Do something with the user input
+                            name = value;
+                          }
+                          ),
                       ),
                       Container(
                         width: 250.0,
@@ -113,6 +142,10 @@ class _SignUpState extends State<SignUp> {
                           onSubmitted: (_) {
                             focusNodePassword.requestFocus();
                           },
+                            onChanged: (value) {
+                              //Do something with the user input.
+                              email = value;
+                            }
                         ),
                       ),
                       Container(
@@ -155,6 +188,10 @@ class _SignUpState extends State<SignUp> {
                           onSubmitted: (_) {
                             focusNodeConfirmPassword.requestFocus();
                           },
+                            onChanged: (value) {
+                              //Do something with the user input.
+                              password = value;
+                            }
                         ),
                       ),
                       Container(
@@ -198,6 +235,10 @@ class _SignUpState extends State<SignUp> {
                             _toggleSignUpButton();
                           },
                           textInputAction: TextInputAction.go,
+                            onChanged: (value) {
+                              //Do something with the user input.
+                              password = value;
+                            }
                         ),
                       ),
                     ],
@@ -245,7 +286,19 @@ class _SignUpState extends State<SignUp> {
                           fontFamily: 'WorkSansBold'),
                     ),
                   ),
-                  onPressed: () => _toggleSignUpButton(),
+                  onPressed: (){
+                    final user = User(
+                      name: signupNameController.text,
+                      email: signupEmailController.text,
+                      password: signupPasswordController.text,
+                      confirm: signupConfirmPasswordController.text,
+                    );
+                    createUser(user);
+                    getCredentials();
+                    CustomSnackBar(context, const Text('New User Registered'));
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) =>LoginPage()));
+                    }//=> _toggleSignUpButton(),
                 ),
               )
             ],
@@ -253,15 +306,22 @@ class _SignUpState extends State<SignUp> {
         ],
       ),
     );
+    }
+  Future createUser(User user,) async{
+    final docUser = FirebaseFirestore.instance.collection('User').doc();
+    user.id = docUser.id;
+
+    final json = user.toJson();
+    //create document and write data to firebase
+    await docUser.set(json);
   }
 
   void _toggleSignUpButton() {
-    CustomSnackBar(context, const Text('SignUp button pressed'));
-    {
-      Navigator.push(
+    CustomSnackBar(context, const Text('New User Registered'));
+
+      /*Navigator.push(
           context, MaterialPageRoute(builder: (context) =>
-          LoginPage()));
-    }
+          LoginPage()));*/
   }
 
   void _toggleSignup() {
@@ -275,4 +335,28 @@ class _SignUpState extends State<SignUp> {
       _obscureTextConfirmPassword = !_obscureTextConfirmPassword;
     });
   }
+}
+
+class User {
+  String id;
+  final String name;
+  final String email;
+  final String password;
+  final String confirm;
+
+  User({
+    this.id = '',
+    required this.name,
+    required this.email,
+    required this.password,
+    required this.confirm,
+  });
+  Map<String, dynamic>
+ toJson() => {
+    'id': id,
+    'name': name,
+    'email': email,
+    'password': password,
+    'confirm': confirm,
+  };
 }

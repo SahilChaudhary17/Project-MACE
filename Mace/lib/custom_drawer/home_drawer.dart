@@ -1,6 +1,9 @@
+import 'package:best_flutter_ui_templates/HomePage/Cleaningrequest.dart';
+import 'package:best_flutter_ui_templates/LoginPages/Login_page.dart';
+import 'package:loading_animations/loading_animations.dart';
 import '../LoginPages/snackbar.dart';
 import '../app_theme.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,6 +25,7 @@ class HomeDrawer extends StatefulWidget {
 
 class _HomeDrawerState extends State<HomeDrawer> {
   List<DrawerList>? drawerList;
+  final _auth = FirebaseAuth.instance;
   @override
   void initState() {
     setDrawerListArray();
@@ -173,8 +177,16 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   color: Colors.red,
                 ),
                 onTap: () {
-                  CustomSnackBar(context, const Text('Signing out. . .'));
-                  SystemNavigator.pop();
+                  LoadingFlipping.circle(
+                    borderColor: Colors.cyan,
+                    borderSize: 3.0,
+                    size: 30.0,
+                    backgroundColor: Colors.cyanAccent,
+                    duration: Duration(milliseconds: 5000),
+                  );
+                  CustomSnackBar(context, const Text('Signing you out. . .'));
+                  _auth.signOut();
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>LoginPage()));
                 },
               ),
               SizedBox(

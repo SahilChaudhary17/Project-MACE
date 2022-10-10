@@ -1,4 +1,4 @@
-import 'package:best_flutter_ui_templates/LoginPages/Login_page.dart';
+import '../LoginPages/Login_page.dart';
 
 import '../fitness_app/models/tabIcon_data.dart';
 import '../fitness_app/training/training_screen.dart';

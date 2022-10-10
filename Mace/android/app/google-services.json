@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1083633259672",
+    "project_id": "mace-ef6f3",
+    "storage_bucket": "mace-ef6f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083633259672:android:51bed5733c560b557c6ced",
+        "android_client_info": {
+          "package_name": "com.example.mace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1083633259672-mb86nbbv2b0qtcsjl9q12b6klccnka5j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATpoB-6ukI4Yzqb-K4lIUSwTNt39hwWi4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1083633259672-mb86nbbv2b0qtcsjl9q12b6klccnka5j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

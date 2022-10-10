@@ -1,8 +1,12 @@
+import 'package:best_flutter_ui_templates/Dashboard/home_screen.dart';
+import 'package:best_flutter_ui_templates/LoginPages/ForgotPassword.dart';
+import 'package:loading_animations/loading_animations.dart';
 import '../Dashboard/navigation_home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_theme.dart';
 import '../LoginPages/snackbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -17,8 +21,12 @@ class _SignInState extends State<SignIn> {
 
   final FocusNode focusNodeEmail = FocusNode();
   final FocusNode focusNodePassword = FocusNode();
+  final _auth = FirebaseAuth.instance;
+  late String email;
+  late String password;
 
   bool _obscureTextPassword = true;
+
 
   @override
   void dispose() {
@@ -72,6 +80,10 @@ class _SignInState extends State<SignIn> {
                           onSubmitted: (_) {
                             focusNodePassword.requestFocus();
                           },
+                            onChanged: (value) {
+                              //Do something with the user input.
+                              email = value;
+                            }
                         ),
                       ),
                       Container(
@@ -104,8 +116,7 @@ class _SignInState extends State<SignIn> {
                               onTap: _toggleLogin,
                               child: Icon(
                                 _obscureTextPassword
-                                    ? FontAwesomeIcons.eye
-                                    : FontAwesomeIcons.eyeSlash,
+                                    ? FontAwesomeIcons.eyeSlash : FontAwesomeIcons.eye,
                                 size: 15.0,
                                 color: Colors.black,
                               ),
@@ -115,6 +126,10 @@ class _SignInState extends State<SignIn> {
                             _toggleSignInButton();
                           },
                           textInputAction: TextInputAction.go,
+                            onChanged: (value) {
+                              //Do something with the user input.
+                              password = value;
+                            }
                         ),
                       ),
                     ],
@@ -161,7 +176,25 @@ class _SignInState extends State<SignIn> {
                           fontFamily: 'WorkSansBold'),
                     ),
                   ),
-                  onPressed: () => _toggleSignInButton(),
+                  onPressed: () async {
+                    LoadingFlipping.circle(
+                      borderColor: Colors.cyan,
+                      borderSize: 3.0,
+                      size: 30.0,
+                      backgroundColor: Colors.cyanAccent,
+                      duration: Duration(milliseconds: 5000),
+                    );
+                    try {
+                      final user = await _auth.signInWithEmailAndPassword(email: email, password: password);
+                      if (user != null) {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) =>NavigationHomeScreen()));
+                        CustomSnackBar(context, const Text('Logging in . . .'));
+                      }
+                    }
+                    catch (e) {
+                      CustomSnackBar(context, const Text('Invalid User ID / Password!!'));
+                    }
+                  }//=> _toggleSignInButton(),
                 ),
               )
             ],
@@ -170,7 +203,10 @@ class _SignInState extends State<SignIn> {
             padding: const EdgeInsets.only(top: 10.0),
             child: TextButton(
                 onPressed: () => {
-                  CustomSnackBar(context, const Text('Forgot Password button pressed . . .'))
+                  //CustomSnackBar(context, const Text('Forgot Password button pressed . . .')),
+                Navigator.push(
+                context, MaterialPageRoute(builder: (context) =>
+                ForgotPasswordScreen())),
                 },
                 child: const Text(
                   'Forgot Password?',
@@ -276,10 +312,13 @@ class _SignInState extends State<SignIn> {
   }
 
   void _toggleSignInButton() {
+
     CustomSnackBar(context, const Text('Logging in . . .'));
+
+    /*loginUser();
     Navigator.push(
         context, MaterialPageRoute(builder: (context) =>
-        NavigationHomeScreen()));
+        NavigationHomeScreen()));*/
   }
 
   void _toggleLogin() {
