@@ -13,5 +13,4 @@ A user-friendly application designed to improve the efficiency of managing an or
 * Firebase
 
 # Credits
-* Ashish Sharma - Contributor
-* Abhinav Kumar - Contributor
+* This project was created by Mr. Sahil Chaudhary as part of a Project Exhibition I along with Mr. Ashish Sharma and Abhinav Kumar
