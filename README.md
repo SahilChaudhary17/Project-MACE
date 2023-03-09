@@ -12,17 +12,6 @@ A user-friendly application designed to improve the efficiency of managing an or
 * Dart
 * Firebase
 
-# Installation
-[Instructions on how to install the application]
-
-# Usage
-[Instructions on how to use the application]
-
-# Contributing
-[Guidelines for contributing to the project]
-
 # Credits
-[List of contributors and/or external resources used in the project]
-
-# License
-[Information about the license governing the use of the application]
+* Ashish Sharma - Contributor
+* Abhinav Kumar - Contributor
